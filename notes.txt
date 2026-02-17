@@ -1,0 +1,14 @@
+1. Review Filters Code ROUTES AND URL PARAMS 
+2. Upload file make it easy 
+3. Check Users CRUD
+4. Check Caching Versioning and IMAGE URLS  for building
+5. Refactored the Filters functionality 
+6. Review Controllers CRUDS / Users / 
+7. Review FormRequest
+8. Add MAX MB  limit on profiles page
+9. DB Backups 
+10. Activity Logs 
+11. Make the update image profile avatar clear on UX change the component. make the box into circle only
+12. Clean Code the sidebar 
+13. Clena theme js , default js and preset
+14. Clean User and AuthController maximax form FormRequest
