@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Services\FilterService;
@@ -10,32 +9,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use App\Repositories\UserRepository;
+
 
 class UserController extends Controller
 {
     public function __construct(
-        protected FilterService $filterService
+        protected FilterService $filterService,
+        protected UserRepository $userRepository
     ) {}
 
     // In UserController.php
 
     public function index(Request $request)
     {
-        $query = User::query()
-            ->where('id', '!=', auth()->id())
-            ->when($request->input('trashed'), function ($query, $trashed) {
-                return $trashed === 'with' ? $query->withTrashed() : ($trashed === 'only' ? $query->onlyTrashed() : $query);
-            })
-            ->filter($request->only(['search', 'role', 'login_status', 'date_range']))
-            ->sort(
-                $request->input('sort_field', 'created_at'),
-                $request->input('sort_order', -1)
-            );
-
-        $users = $this->paginateQuery($request, $query);
+        $query = $this->userRepository->where('id', '!=', auth()->id());
 
         return Inertia::render('Users/View', [
-            'users' => $users,
+            'users' => $this->userRepository->paginate($request, $query),
             'roles' => $this->filterService->getRoles(),
             'loginStatuses' => $this->filterService->getLoginStatus(),
         ]);
@@ -48,11 +39,10 @@ class UserController extends Controller
         ]);
     }
 
+
     public function show(User $user)
     {
-        return Inertia::render('Users/Show', [
-            'user' => $user,
-        ]);
+        return Inertia::render('Users/Show', ['user' => $user]);
     }
 
     public function edit(User $user)
@@ -65,12 +55,13 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        $validated = $request->safe()->except(['role', 'password', 'avatar']);
+        $data = $request->validated();
 
-        $user = User::create([
-            ...$validated,
-            'type' => $request->validated('role'),
-            'password' => Hash::make($request->validated('password')),
+        /** @var User $user */
+        $user = $this->userRepository->create([
+            ...$request->safe()->except(['role', 'password', 'avatar']),
+            'type' => $data['role'],
+            'password' => Hash::make($data['password']),
         ]);
 
         $this->handleAvatarUpload($request, $user);
@@ -80,56 +71,44 @@ class UserController extends Controller
 
     public function update(UserRequest $request, User $user)
     {
-
-        $validated = $request->safe()->except(['role', 'password', 'avatar']);
-
-        $data = [
-            ...$validated,
-            'type' => $request->validated('role'),
+        $data = $request->validated();
+        $updateData = [
+            ...$request->safe()->except(['role', 'password', 'avatar']),
+            'type' => $data['role'],
         ];
 
         if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->validated('password'));
+            $updateData['password'] = Hash::make($data['password']);
         }
 
-        $user->update($data);
+        $this->userRepository->update($user->id, $updateData);
         $this->handleAvatarUpload($request, $user);
 
-        return redirect()->route('users.index')->withSuccess('User updated successfully.');
+        return to_route('users.index')->with('success', 'User updated successfully.');
     }
 
     public function restore($id)
     {
-        $user = User::withTrashed()->findOrFail($id);
-        $user->restore();
-
+        $this->userRepository->restore($id);
         return back()->with('success', 'User restored successfully.');
-
     }
 
     public function forceDelete($id)
     {
-
-        $user = User::withTrashed()->findOrFail($id);
-
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-
-        $user->forceDelete();
+        /** @var User $user */
+        $user = $this->userRepository->findWithTrashed($id);
 
         if ($user->avatar) {
             Storage::disk('public')->delete($user->avatar);
         }
 
+        $this->userRepository->forceDelete($id);
         return back()->with('success', 'User permanently deleted.');
     }
 
     public function destroy(User $user)
     {
-
-        $user->delete();
-
+        $this->userRepository->delete($user->id);
         return back()->with('success', 'User deleted successfully.');
     }
 
@@ -141,10 +120,10 @@ class UserController extends Controller
             }
 
             $file = $request->file('avatar');
-            $filename = "avatar-{$user->id}-".time().".{$file->extension()}";
+            $filename = "avatar-{$user->id}-" . time() . ".{$file->extension()}";
             $path = $file->storeAs('avatars', $filename, 'public');
 
-            $user->update(['avatar' => $path]);
+            $this->userRepository->update($user->id, ['avatar' => $path]);
         }
     }
 }

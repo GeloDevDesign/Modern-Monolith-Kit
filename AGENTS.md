@@ -119,6 +119,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Use appropriate PHP type hints for method parameters.
 
 <!-- Explicit Return Types and Method Params -->
+
 ```php
 protected function isAccessible(User $user, ?string $path = null): bool
 {
@@ -272,7 +273,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 - Always use existing Tailwind conventions; check project patterns before adding new ones.
 - IMPORTANT: Always use `search-docs` tool for version-specific Tailwind CSS documentation and updated code examples. Never rely on training data.
 - IMPORTANT: Activate `tailwindcss-development` every time you're working with a Tailwind CSS or styling-related task.
-</laravel-boost-guidelines>
+  </laravel-boost-guidelines>
 
 <!-- ============================= -->
 <!-- PROJECT-SPECIFIC CUSTOM RULES -->
@@ -288,15 +289,15 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ## Key Directories
 
-| Purpose | Path |
-|---|---|
-| Controllers | `app/Http/Controllers/` |
-| Models | `app/Models/` |
-| Repositories | `app/Repositories/` |
-| Pages (Vue) | `resources/js/Pages/` |
-| Components | `resources/js/Components/` |
-| Layouts | `resources/js/Layouts/` |
-| Sidebar Links | `resources/js/routes.js` |
+| Purpose       | Path                       |
+| ------------- | -------------------------- |
+| Controllers   | `app/Http/Controllers/`    |
+| Models        | `app/Models/`              |
+| Repositories  | `app/Repositories/`        |
+| Pages (Vue)   | `resources/js/Pages/`      |
+| Components    | `resources/js/Components/` |
+| Layouts       | `resources/js/Layouts/`    |
+| Sidebar Links | `resources/js/routes.js`   |
 
 # Custom Rules
 
@@ -308,10 +309,22 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 - New modules get their own route file (e.g., `routes/users.php`). Register it in `bootstrap/app.php`. Don't dump everything in `web.php`.
 
-## Repository Pattern
+## Repository Pattern (Simplified)
 
-- Use `app/Repositories/{Model}Repository.php` with interfaces for all data access.
-- Inject repository interfaces into controllers via constructor injection. Never instantiate directly.
+- **NO INTERFACES**: Never create or use Interfaces for the Repository pattern.
+- **BASE REPOSITORY**: Use `app/Repositories/BaseRepository.php` that handles:
+    - `all()`: Get all records.
+    - `paginate(int $perPage)`: Standard pagination.
+    - `find(int|string $id)`: Uses `findOrFail($id)` to throw 404s automatically.
+    - `findWhere(string $column, mixed $value)`: Get collection by column.
+    - `findFirstWhere(string $column, mixed $value)`: Uses `where($column, $value)->firstOrFail()`.
+    - `create(array $data)`: Standard model creation.
+    - `update(int|string $id, array $data)`: Find and update record.
+    - `delete(int|string $id)`: Find and delete record.
+- **CONCRETE REPOSITORIES**: Every module must have a concrete Repository class (e.g., `UserRepository`) that extends `BaseRepository`.
+- **CONSTRUCTOR**: The concrete repository must contain a constructor that passes the specific Eloquent Model to the parent `BaseRepository`.
+- **DIRECT DI**: In Controllers, use Dependency Injection to inject the concrete Repository class directly (e.g., `protected UserRepository $userRepo`).
+- **MINIMAL CHANGES**: Modify only the minimum lines necessary and do not refactor or restyle existing UI/logic unless explicitly requested.
 
 ## Components
 
@@ -345,6 +358,7 @@ Whenever you create, modify, or delete a module, you MUST update `docs/modules.m
 > Auto-maintained by AI. Last updated: YYYY-MM-DD
 
 ## Module Name
+
 Short description of what this module does.
 
 - **Feature 1**: Brief explanation
@@ -354,4 +368,3 @@ Short description of what this module does.
 
 ---
 ```
-
