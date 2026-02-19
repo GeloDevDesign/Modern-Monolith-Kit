@@ -54,9 +54,12 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 - You must only create documentation files if explicitly requested by the user.
 
-## Replies
+## Replies (ULTRA-CONCISE)
 
-- Be concise in your explanations - focus on what's important rather than explaining obvious details.
+- **Be brief**: Skip fluff, intro/outro, and obvious explanations.
+- **Code first**: Prioritize showing code or taking action.
+- **Minimal summaries**: Only explain what is non-obvious.
+- **No yapping**: Keep the conversation efficient.
 
 === boost rules ===
 
@@ -178,7 +181,10 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ## Controllers & Validation
 
-- Always create Form Request classes for validation rather than inline validation in controllers. Include both validation rules and custom error messages.
+- **Form Requests**: ALWAYS create Form Request classes for validation (`php artisan make:request`) rather than inline validation in controllers. Include both validation rules and custom error messages.
+- **Secure Updates**: In `update` methods, explicitly use `$request->safe()->only([...])` or `$request->safe()->except([...])` to filter out immutable fields. Do not rely on validation rules alone.
+- **Data Access**: NEVER use `$request->all()`. STRICTLY use `$request->validated()` or `$request->safe()` to ensure only valid data is processed.
+- **Response Handling**: Use Laravel's native redirect methods with session flashing (`return back()->with('success', '...');`). Avoid returning JSON or manual toasts from controllers; the frontend is configured to display session flash notifications automatically.
 - Check sibling Form Requests to see if the application uses array or string based validation rules.
 
 ## Authentication & Authorization
@@ -253,7 +259,10 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 # Inertia + Vue
 
-Vue components must have a single root element.
+- Vue components must have a single root element.
+- **PrimeVue Usage**: Register all PrimeVue components globally in `resources/js/app.js`. **Do not** import them locally within `.vue` files.
+- **Form Buttons**: Bind the `:loading` prop to `form.processing`. Text must update (e.g., `<Button :loading="form.processing">{{ form.processing ? 'Saving...' : 'Save' }}</Button>`).
+- **Sidebar Consistency**: For sidebar items, use standard classes: `flex items-center cursor-pointer px-3 py-2 rounded text-primary-100 dark:text-zinc-200 hover:bg-primary-800/50 dark:hover:bg-zinc-800 hover:text-white dark:hover:text-white duration-150 transition-colors p-ripple no-underline mt-1`.
 - IMPORTANT: Activate `inertia-vue-development` when working with Inertia Vue client-side patterns.
 
 === tailwindcss/core rules ===
@@ -264,3 +273,85 @@ Vue components must have a single root element.
 - IMPORTANT: Always use `search-docs` tool for version-specific Tailwind CSS documentation and updated code examples. Never rely on training data.
 - IMPORTANT: Activate `tailwindcss-development` every time you're working with a Tailwind CSS or styling-related task.
 </laravel-boost-guidelines>
+
+<!-- ============================= -->
+<!-- PROJECT-SPECIFIC CUSTOM RULES -->
+<!-- ============================= -->
+
+# Project Context
+
+- **Stack**: Laravel 12 + Vue 3 + Inertia.js v2 + PrimeVue 4 (Aura) + Tailwind CSS 4
+- **Database**: MySQL
+- **Icons**: PrimeIcons
+- **State**: Pinia or Inertia shared props
+- **Permissions**: Role-based via `auth.role` middleware (e.g., `auth.role:admin,user`)
+
+## Key Directories
+
+| Purpose | Path |
+|---|---|
+| Controllers | `app/Http/Controllers/` |
+| Models | `app/Models/` |
+| Repositories | `app/Repositories/` |
+| Pages (Vue) | `resources/js/Pages/` |
+| Components | `resources/js/Components/` |
+| Layouts | `resources/js/Layouts/` |
+| Sidebar Links | `resources/js/routes.js` |
+
+# Custom Rules
+
+## File Uploads
+
+- On **update** with files/images, use Method Spoofing: send `POST` with `_method: 'PUT'` so `multipart/form-data` is parsed correctly.
+
+## Modular Routing
+
+- New modules get their own route file (e.g., `routes/users.php`). Register it in `bootstrap/app.php`. Don't dump everything in `web.php`.
+
+## Repository Pattern
+
+- Use `app/Repositories/{Model}Repository.php` with interfaces for all data access.
+- Inject repository interfaces into controllers via constructor injection. Never instantiate directly.
+
+## Components
+
+- Check `resources/js/Components/` before creating new ones. Maximize reuse and respect existing props.
+- PrimeVue: global registration only in `resources/js/app.js`.
+- Form buttons: always bind `:loading="form.processing"` and show dynamic label.
+
+## Development Workflow
+
+- **New Page**: Create Vue component in `Pages/`, add route, add controller method.
+- **Sidebar**: Update sidebar links in `resources/js/routes.js`.
+- **Database**: Always use Migrations + Seeders.
+
+# Auto-Documentation (MANDATORY)
+
+Whenever you create, modify, or delete a module, you MUST update `docs/modules.md`.
+
+## Rules
+
+1. After completing any module-related work (new module, new feature in a module, structural change), update `docs/modules.md`.
+2. Each module entry must include: name, short description, key features (bullets), related files.
+3. Keep entries concise — no more than 10 lines per module.
+4. If `docs/modules.md` does not exist, create it.
+5. This is **not optional**. Every module change = doc update.
+
+## Format
+
+```markdown
+# Module Documentation
+
+> Auto-maintained by AI. Last updated: YYYY-MM-DD
+
+## Module Name
+Short description of what this module does.
+
+- **Feature 1**: Brief explanation
+- **Feature 2**: Brief explanation
+
+**Files**: `Controllers/XController.php`, `Pages/X/Index.vue`, `routes/x.php`, `Models/X.php`
+
+---
+```
+
