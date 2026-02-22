@@ -74,15 +74,32 @@ const submit = () => {
                                     >Avatar</label
                                 >
                                 <div class="card">
-                                    <div class="mb-4 p-4 border border-gray-100 dark:border-zinc-800 rounded-lg bg-gray-50 dark:bg-zinc-800/50 flex flex-col items-center justify-center gap-4">
+                                    <div
+                                        class="mb-4 p-4 border border-gray-100 dark:border-zinc-800 rounded-lg bg-gray-50 dark:bg-zinc-800/50 flex flex-col items-center justify-center gap-4"
+                                    >
                                         <div v-if="previewUrl" class="relative">
-                                             <img :src="previewUrl" alt="Avatar Preview" class="w-32 h-32 rounded-full object-cover ring-4 ring-white dark:ring-zinc-700 shadow-md" />
+                                            <img
+                                                :src="previewUrl"
+                                                alt="Avatar Preview"
+                                                class="w-32 h-32 rounded-full object-cover ring-4 ring-white dark:ring-zinc-700 shadow-md"
+                                            />
                                         </div>
-                                        <div v-else class="w-32 h-32 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center ring-4 ring-white dark:ring-zinc-700 shadow-md">
-                                            <i class="pi pi-user text-4xl text-gray-400 dark:text-gray-500"></i>
+                                        <div
+                                            v-else
+                                            class="w-32 h-32 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center ring-4 ring-white dark:ring-zinc-700 shadow-md"
+                                        >
+                                            <i
+                                                class="pi pi-user text-4xl text-gray-400 dark:text-gray-500"
+                                            ></i>
                                         </div>
-                                        <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                                            {{ previewUrl ? 'New Avatar Preview' : 'No Avatar Selected' }}
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 font-medium"
+                                        >
+                                            {{
+                                                previewUrl
+                                                    ? "New Avatar Preview"
+                                                    : "No Avatar Selected"
+                                            }}
                                         </span>
                                     </div>
 
@@ -106,7 +123,11 @@ const submit = () => {
                                             >
                                         </template>
                                     </FileUpload>
-                                    <small v-if="form.errors.avatar" class="text-red-500 block mt-2">{{ form.errors.avatar }}</small>
+                                    <small
+                                        v-if="form.errors.avatar"
+                                        class="text-red-500 block mt-2"
+                                        >{{ form.errors.avatar }}</small
+                                    >
                                 </div>
                             </div>
 
@@ -120,7 +141,10 @@ const submit = () => {
                                         <label
                                             for="first_name"
                                             class="font-medium text-gray-700 dark:text-gray-200"
-                                            >First Name <span class="text-red-500">*</span></label
+                                            >First Name
+                                            <span class="text-red-500"
+                                                >*</span
+                                            ></label
                                         >
                                         <InputText
                                             id="first_name"
@@ -160,8 +184,9 @@ const submit = () => {
                                         <label
                                             for="last_name"
                                             class="font-medium text-gray-700 dark:text-gray-200"
-                                            >Last Name <span class="text-red-500">*</span> </label
-                                        >
+                                            >Last Name
+                                            <span class="text-red-500">*</span>
+                                        </label>
                                         <InputText
                                             id="last_name"
                                             v-model="form.last_name"
@@ -183,7 +208,10 @@ const submit = () => {
                                     <label
                                         for="email"
                                         class="font-medium text-gray-700 dark:text-gray-200"
-                                        >Email <span class="text-red-500">*</span></label
+                                        >Email
+                                        <span class="text-red-500"
+                                            >*</span
+                                        ></label
                                     >
                                     <InputText
                                         id="email"
@@ -205,7 +233,10 @@ const submit = () => {
                                     <label
                                         for="role"
                                         class="font-medium text-gray-700 dark:text-gray-200"
-                                        >Role <span class="text-red-500">*</span></label
+                                        >Role
+                                        <span class="text-red-500"
+                                            >*</span
+                                        ></label
                                     >
                                     <Dropdown
                                         id="role"
@@ -232,7 +263,10 @@ const submit = () => {
                                         <label
                                             for="password"
                                             class="font-medium text-gray-700 dark:text-gray-200"
-                                            >Password <span class="text-red-500">*</span></label
+                                            >Password
+                                            <span class="text-red-500"
+                                                >*</span
+                                            ></label
                                         >
                                         <Password
                                             id="password"
@@ -252,7 +286,10 @@ const submit = () => {
                                         <label
                                             for="password_confirmation"
                                             class="font-medium text-gray-700 dark:text-gray-200"
-                                            >Confirm Password <span class="text-red-500">*</span></label
+                                            >Confirm Password
+                                            <span class="text-red-500"
+                                                >*</span
+                                            ></label
                                         >
                                         <Password
                                             id="password_confirmation"
