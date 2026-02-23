@@ -95,14 +95,14 @@ const getIconColor = (type) => {
         <Drawer
             v-model:visible="visible"
             position="right"
-            class="!w-80 sm:!w-[400px]"
+            class="!w-80 sm:!w-[500px]"
             :pt="{
                 header: { class: '!p-4 !border-b !border-gray-100 dark:!border-zinc-800' },
                 content: { class: '!p-0' }
             }"
         >
             <template #header>
-                <div class="flex items-center justify-between w-full">
+                <div class="flex items-center justify-between w-full mr-2">
                     <span class="font-bold text-lg text-gray-800 dark:text-gray-100">Notifications</span>
                     <button 
                         v-if="unreadCount > 0"

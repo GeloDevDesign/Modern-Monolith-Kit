@@ -1,10 +1,11 @@
 # Module Documentation
 
-> Auto-maintained by AI. Last updated: 2026-02-19
+> Auto-maintained by AI. Last updated: 2026-02-23
 
 ---
 
 ## Authentication
+
 Handles user login, registration, password reset, and email verification.
 
 - **Login**: Email/password authentication
@@ -17,6 +18,7 @@ Handles user login, registration, password reset, and email verification.
 ---
 
 ## Users
+
 Manage all system users, roles, and permissions.
 
 - **List/View**: Browse and view user details
@@ -28,6 +30,7 @@ Manage all system users, roles, and permissions.
 ---
 
 ## Profile
+
 Allows authenticated users to manage their own account.
 
 - **Edit Profile**: Update personal information
@@ -38,6 +41,7 @@ Allows authenticated users to manage their own account.
 ---
 
 ## Settings
+
 System-wide configuration managed by admins.
 
 - **General Settings**: App-level settings (name, timezone, etc.)
@@ -47,6 +51,7 @@ System-wide configuration managed by admins.
 ---
 
 ## Activity Logs
+
 Track and audit user actions across the system (powered by Spatie Activity Log).
 
 - **Index**: View chronological log of all system activities
@@ -56,6 +61,7 @@ Track and audit user actions across the system (powered by Spatie Activity Log).
 ---
 
 ## Backups
+
 Database and file backup management (powered by Spatie Backup).
 
 - **Index**: View, create, and download backups
@@ -65,6 +71,7 @@ Database and file backup management (powered by Spatie Backup).
 ---
 
 ## Home (Dashboard)
+
 The main landing page after login. Displays key metrics and quick actions.
 
 **Files**: `Pages/Home.vue`

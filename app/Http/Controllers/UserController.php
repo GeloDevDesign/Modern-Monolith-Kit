@@ -23,10 +23,15 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $query = $this->userRepository->where('id', '!=', auth()->id());
+        $query = $this->userRepository->where('id', '!=', auth()->id())
+            ->filter($request->all())
+            ->sort(
+                $request->input('sort_field', 'created_at'),
+                $request->input('sort_order', -1)
+            );
 
         return Inertia::render('Users/View', [
-            'users' => $this->userRepository->paginate($request, $query),
+            'users' => $this->userRepository->paginate($request->input('per_page'), $query),
             'roles' => $this->filterService->getRoles(),
             'loginStatuses' => $this->filterService->getLoginStatus(),
         ]);
